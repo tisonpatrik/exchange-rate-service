@@ -6,4 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115.3",
+    "pydantic-settings>=2.6.0",
+    "redis>=5.2.0",
+    "websockets>=13.1",
 ]

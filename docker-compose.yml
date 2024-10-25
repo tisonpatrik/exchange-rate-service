@@ -1,22 +1,19 @@
 services:
   exchange_rate:
-    image: exchange_rate_service:local
     build:
       context: .
       dockerfile: Dockerfile
-      target: dev
+      target: prod
     hostname: exchange_rate
     container_name: exchange_rate
     ports:
       - "49000:49000"
     volumes:
-      - ./src/exchange_rate:/exchange_rate_service/src/exchange_rate
+      - ./src/exchange_rate:/app/src/exchange_rate
     env_file:
       - .env
     depends_on:
       - redis_cache
-    networks:
-      - exchange_rate_network
 
   redis_cache:
     image: redis:latest
@@ -28,7 +25,3 @@ services:
 volumes:
   redis:
     driver: local
-
-networks:
-  exchange_rate_network:
-    driver: bridge
