@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class HeartbeatMessage(BaseModel):
-    type: Literal["heartbeat"]
+    type: str = Field(default="heartbeat")
 
 
 class ConversionRequestPayload(BaseModel):
@@ -19,7 +19,7 @@ class ConversionRequestPayload(BaseModel):
 
 
 class ConversionRequestMessage(BaseModel):
-    type: Literal["message"]
+    type: str = Field(default="message")
     id: int
     payload: ConversionRequestPayload
 
@@ -31,12 +31,12 @@ class ConversionResponsePayload(ConversionRequestPayload):
 
 
 class ConversionResponseMessage(BaseModel):
-    type: Literal["message"]
+    type: str = Field(default="message")
     id: int
     payload: ConversionResponsePayload
 
 
 class ConversionErrorMessage(BaseModel):
-    type: Literal["error"]
+    type: str = Field(default="error")
     id: int
     message: str

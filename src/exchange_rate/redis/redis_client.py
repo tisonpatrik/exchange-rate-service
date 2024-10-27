@@ -12,7 +12,7 @@ from exchange_rate.redis.base_statements.set_cache_statement import (
 )
 
 
-class RedisRepository:
+class RedisClient:
     def __init__(self, pool: redis.ConnectionPool):
         self.redis_client = redis.Redis(connection_pool=pool)
         self.logger = AppLogger.get_instance().get_logger()

@@ -3,6 +3,7 @@ import json
 
 import websockets
 
+from exchange_rate.api.handlers.conversion_handler import ConversionHandler
 from exchange_rate.config import HEARTBEAT_INTERVAL, HEARTBEAT_TIMEOUT, config
 from exchange_rate.logging.logger import AppLogger
 from exchange_rate.models.models import (
@@ -12,7 +13,8 @@ from exchange_rate.models.models import (
 
 
 class WebSocketClient:
-    def __init__(self):
+    def __init__(self, conversion_handler: ConversionHandler):
+        self.conversion_handler = conversion_handler
         self.url = config.CURRENCY_ASSIGNMENT_URL
         self.logger = AppLogger.get_instance().get_logger()
 
@@ -38,7 +40,7 @@ class WebSocketClient:
                 elif data["type"] == "message":
                     # Here you would handle conversion requests
                     request = ConversionRequestMessage.parse_obj(data)
-                    await self.handle_conversion_request(request)
+                    await self.conversion_handler.convert_to_euros_async(request)
                 else:
                     self.logger.warning("Unknown message type received.")
         except asyncio.TimeoutError:
@@ -50,13 +52,6 @@ class WebSocketClient:
 
     async def send_heartbeat(self, ws):
         while True:
-            await ws.send(HeartbeatMessage(type="heartbeat").json())
+            await ws.send(HeartbeatMessage().json())
             self.logger.info("Sent heartbeat.")
             await asyncio.sleep(HEARTBEAT_INTERVAL)
-
-    async def handle_conversion_request(self, request: ConversionRequestMessage):
-        # Process the conversion request here
-        self.logger.info("Processing conversion request with ID %s", request.id)
-        # If conversion succeeds, send a response
-        # If conversion fails, send ConversionErrorMessage
-        pass
