@@ -2,9 +2,6 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
 from exchange_rate.api.dependencies.core_dependencies import app_lifespan
-from exchange_rate.api.endpoints.conversion_route import (
-    websocket_router as conversion_route,
-)
 from exchange_rate.api.middleware.middleware import AppMiddleware
 from exchange_rate.config import APP_NAME, config
 
@@ -17,5 +14,3 @@ app = FastAPI(
 )
 
 app.add_middleware(AppMiddleware)
-
-app.include_router(conversion_route)

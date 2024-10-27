@@ -3,10 +3,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 
-from exchange_rate.api.dependencies.app_dependencies import (
-    connect_to_currency_assignment,
-)
 from exchange_rate.api.handlers.conversion_handler import ConversionHandler
+from exchange_rate.api.websocket.websocket_client import WebSocketClient
 from exchange_rate.redis.redis_client import RedisRepository
 from exchange_rate.redis.redis_setup import setup_async_redis
 
@@ -14,12 +12,11 @@ from exchange_rate.redis.redis_setup import setup_async_redis
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):
     async with setup_async_redis(app):
-        # Start background task for the WebSocket connection to currency-assignment
-        task = asyncio.create_task(connect_to_currency_assignment())
+        websocket_client = WebSocketClient()
+        task = asyncio.create_task(websocket_client.connect())
 
-        yield  # This allows FastAPI to continue setting up the application
+        yield
 
-        # Cleanup after application shutdown
         task.cancel()
         await task
 

@@ -6,10 +6,11 @@ services:
       target: prod
     hostname: exchange_rate
     container_name: exchange_rate
+    restart: always
     ports:
       - "49000:49000"
     volumes:
-      - ./src/exchange_rate:/app/src/exchange_rate
+      - ./src/exchange_rate:/app/exchange_rate
     env_file:
       - .env
     depends_on:
