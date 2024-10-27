@@ -25,14 +25,14 @@ async def setup_async_redis(app: FastAPI):
         app.state.redis_pool = pool
         logger.info("Redis connection pool initialized successfully.")
         yield
-    except ConnectionError as e:
+    except ConnectionError:
         logger.exception(
             "Failed to initialize Redis connection pool due to connection error"
         )
-        raise e
-    except TimeoutError as e:
+        raise
+    except TimeoutError:
         logger.exception("Redis connection pool initialization timed out")
-        raise e
+        raise
     finally:
         if app.state.redis_pool:
             await app.state.redis_pool.aclose()

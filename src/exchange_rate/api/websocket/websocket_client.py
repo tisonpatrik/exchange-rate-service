@@ -24,8 +24,13 @@ class WebSocketClient:
                 async with websockets.connect(self.url) as ws:
                     self.logger.info("Connected to currency-assignment WebSocket.")
                     await asyncio.gather(self.listen(ws), self.send_heartbeat(ws))
-            except websockets.ConnectionClosed as e:
-                self.logger.error("WebSocket connection closed: %s", e)
+            except websockets.ConnectionClosedOK:
+                # Expected behavior, log as a warning
+                self.logger.warning("WebSocket connection closed gracefully (1000 OK). Reconnecting...")
+                await asyncio.sleep(HEARTBEAT_INTERVAL)
+            except websockets.ConnectionClosedError:
+                # Other unexpected disconnections
+                self.logger.exception("WebSocket connection closed unexpectedly: {e}")
                 await asyncio.sleep(HEARTBEAT_INTERVAL)
 
     async def listen(self, ws):
@@ -40,10 +45,10 @@ class WebSocketClient:
                 elif data["type"] == "message":
                     # Here you would handle conversion requests
                     request = ConversionRequestMessage.parse_obj(data)
-                    await self.conversion_handler.convert_to_euros_async(request)
+                    await self.conversion_handler.convert_to_base_currency_async(request)
                 else:
                     self.logger.warning("Unknown message type received.")
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self.logger.warning(
                 "No message received within %s seconds. Connection will be refreshed.",
                 HEARTBEAT_TIMEOUT,

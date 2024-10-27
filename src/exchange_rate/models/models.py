@@ -39,3 +39,8 @@ class ConversionErrorMessage(BaseModel):
     type: str = Field(default="error")
     id: int
     message: str
+
+
+class LatestExchangeRatesResponse(BaseModel):
+    last_updated_at: datetime
+    data: dict[str, Decimal]

@@ -8,6 +8,7 @@ HEARTBEAT_INTERVAL = 1  # Interval for sending heartbeats (in seconds)
 HEARTBEAT_TIMEOUT = 2  # Time after which connection should be refreshed
 
 BASE_CURRENCY = "EUR"
+TTL = 60 * 60 * 2  # 2 hours
 
 
 class Settings(BaseSettings):

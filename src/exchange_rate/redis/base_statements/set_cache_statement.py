@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from exchange_rate.config import TTL
+
 
 class SetCacheStatement(ABC):
     """Abstract class for setting cache key and value."""
@@ -7,7 +9,7 @@ class SetCacheStatement(ABC):
     def __init__(self, values):
         self.values = values
         self.name = ""
-        self._time_to_live = 30  # default TTL in seconds
+        self._time_to_live = TTL
 
     @property
     @abstractmethod

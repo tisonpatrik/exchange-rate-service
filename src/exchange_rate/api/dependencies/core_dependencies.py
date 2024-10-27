@@ -22,12 +22,10 @@ async def app_lifespan(app: FastAPI):
     async with setup_async_redis(app), setup_freecurrencyapi_client(app):
         # Ručně inicializujeme Redis klienta a FreeCurrencyAPI klienta
         redis_client = RedisClient(app.state.redis_pool)
-        freecurrency_client = FreeCurrencyAPIClient(app.state.currency_api_client)
+        freecurrency_client = FreeCurrencyAPIClient(app.state.currency_api_client, redis_client=redis_client)
 
         # Inicializujeme ConversionHandler s klienty
-        handler = ConversionHandler(
-            redis_client=redis_client, freecurrency_client=freecurrency_client
-        )
+        handler = ConversionHandler(freecurrency_client=freecurrency_client)
 
         # Nastavíme WebSocket klienta s handlerem
         async with setup_websocket_client(app, handler):
