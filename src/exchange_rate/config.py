@@ -2,7 +2,7 @@ from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-APP_NAME = "gallery_service"
+APP_NAME = "exchange_rate_service"
 
 
 class Settings(BaseSettings):
@@ -10,7 +10,10 @@ class Settings(BaseSettings):
     ENVIRONMENT: Literal["local", "test", "prod"]
 
     # Redis
-    REDIS: str
+    REDIS_URL: str
+    MAX_REDIS_CONNECTIONS: int
+    REDIS_SOCKET_TIMEOUT: int
+    REDIS_SOCKET_CONNECT_TIMEOUT: int
 
 
 config = Settings()  # type: ignore
