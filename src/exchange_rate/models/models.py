@@ -1,6 +1,5 @@
 from datetime import datetime
 from decimal import Decimal
-from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -26,7 +25,7 @@ class ConversionRequestMessage(BaseModel):
 
 class ConversionResponsePayload(ConversionRequestPayload):
     stake: Decimal = Field(max_digits=10, decimal_places=5)
-    currency: Literal["EUR"]
+    currency: str
     date: datetime
 
 

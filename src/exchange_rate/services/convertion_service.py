@@ -1,4 +1,6 @@
+from decimal import Decimal
+
+
 class ConversionService:
-    async def convert_to_eur(self, payload: dict) -> dict:
-        # Perform conversion logic
-        return payload
+    def convert_to_eur(self, stake: Decimal, exchange_rate: Decimal) -> Decimal:
+        return stake / exchange_rate
