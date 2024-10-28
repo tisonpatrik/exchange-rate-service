@@ -1,12 +1,12 @@
 from contextlib import asynccontextmanager
 from functools import lru_cache
 
-import redis.asyncio as redis
 from fastapi import FastAPI
-from redis.exceptions import TimeoutError
 
+import redis.asyncio as redis
 from exchange_rate.config import config
 from exchange_rate.logging.logger import AppLogger
+from redis.exceptions import TimeoutError
 
 logger = AppLogger.get_instance().get_logger()
 
@@ -26,9 +26,7 @@ async def setup_async_redis(app: FastAPI):
         logger.info("Redis connection pool initialized successfully.")
         yield
     except ConnectionError:
-        logger.exception(
-            "Failed to initialize Redis connection pool due to connection error"
-        )
+        logger.exception("Failed to initialize Redis connection pool due to connection error")
         raise
     except TimeoutError:
         logger.exception("Redis connection pool initialization timed out")

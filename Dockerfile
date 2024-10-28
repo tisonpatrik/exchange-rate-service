@@ -31,7 +31,6 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --no-dev
 
 COPY src/exchange_rate ./exchange_rate
-COPY .env ./
 
 # Set a non-root user for security
 RUN adduser --disabled-password --gecos '' myuser
