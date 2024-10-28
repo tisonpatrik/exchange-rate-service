@@ -8,6 +8,7 @@ dependencies = [
     "fastapi[standard]>=0.115.3",
     "freecurrencyapi>=0.1.0",
     "pydantic-settings>=2.6.0",
+    "pytest>=8.3.3",
     "redis>=5.2.0",
     "websockets>=13.1",
 ]
@@ -17,8 +18,8 @@ keep-runtime-typing = true
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra --cov=risk --cov=common --cov-report=term-missing:skip-covered"
-
+testpaths = ["test"]
+pythonpath = ["src"]
 
 [tool.pyright]
 venvPath = "."
@@ -28,7 +29,7 @@ venv = ".venv"
 line-length = 140
 indent-width = 4
 target-version = "py312"
-
+src = ["src/exchange_rate", "test"]
 [tool.ruff.lint]
 select = [
     'A',     # flake8-builtins

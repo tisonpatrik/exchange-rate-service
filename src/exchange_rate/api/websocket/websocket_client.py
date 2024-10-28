@@ -45,7 +45,10 @@ class WebSocketClient:
                 elif data["type"] == "message":
                     # Here you would handle conversion requests
                     request = ConversionRequestMessage.parse_obj(data)
-                    await self.conversion_handler.convert_to_base_currency_async(request)
+                    response = await self.conversion_handler.convert_to_base_currency_async(request)
+                    # Send the response back through the WebSocket
+                    await ws.send(response.json())
+                    self.logger.info("Sent response: %s", response.json())
                 else:
                     self.logger.warning("Unknown message type received.")
         except TimeoutError:

@@ -18,12 +18,7 @@ class ConversionHandler:
 
     async def convert_to_base_currency_async(self, request: ConversionRequestMessage):
         try:
-            self.logger.info("Converting stake to EUR: %s", request.json())
             exchange_rates = await self.freecurrency_client.get_latest_exchange_rates(base_currency=BASE_CURRENCY)
-
-            if request.payload.currency not in exchange_rates.data:
-                error_message = f"Unable to convert stake. Error: Currency '{request.payload.currency}' not available in exchange rates"
-                return ConversionErrorMessage(id=request.id, message=error_message)
 
             # Perform conversion
             converted_stake = self.exchange_service.convert_currency(
@@ -42,12 +37,10 @@ class ConversionHandler:
                 date=request.payload.date,
             )
 
-            response = ConversionResponseMessage(
+            return ConversionResponseMessage(
                 id=request.id,
                 payload=response_payload,
             )
-            self.logger.info("Successfully converted stake to %s: %s", BASE_CURRENCY, response.json())
-            return response
 
         except Exception as e:
             # Handle unexpected errors with a generic error response
