@@ -15,23 +15,19 @@ class AppLogger(metaclass=SingletonMeta):
     def __init__(self):
         """Initialize the logger."""
         self._logger = logging.getLogger("app_logger")  # Changed the logger name
-        self._logger.setLevel(logging.DEBUG)  # Set the desired logging level
+        self._logger.setLevel(logging.INFO)  # Set the desired logging level
         self._logger.propagate = False
         # Ensure the logger has no other handlers
         if not self._logger.hasHandlers():
             if config.ENVIRONMENT == "local":
                 # Use RichHandler only in local environment
                 rich_handler = RichConsoleHandler()
-                rich_handler.setFormatter(
-                    logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
-                )
+                rich_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
                 self._logger.addHandler(rich_handler)
             else:
                 # Use standard StreamHandler for non-local environments
                 stream_handler = logging.StreamHandler()
-                stream_handler.setFormatter(
-                    logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
-                )
+                stream_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
                 self._logger.addHandler(stream_handler)
 
     def get_logger(self):
@@ -49,6 +45,4 @@ class RichConsoleHandler(RichHandler):
 
     def __init__(self, width=200, style=None, **kwargs):
         """Initialize the RichConsoleHandler."""
-        super().__init__(
-            console=Console(color_system="256", width=width, style=style), **kwargs
-        )
+        super().__init__(console=Console(color_system="256", width=width, style=style), **kwargs)

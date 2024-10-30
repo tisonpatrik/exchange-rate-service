@@ -10,7 +10,7 @@ services:
     ports:
       - "49000:49000"
     volumes:
-      - ./src/exchange_rate:/app/exchange_rate
+      - ./src/exchange_rate:/app/exchange_rate:ro
     env_file:
       - .env
     depends_on:

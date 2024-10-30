@@ -20,14 +20,12 @@ class ConversionHandler:
         try:
             exchange_rates = await self.freecurrency_client.get_latest_exchange_rates(base_currency=BASE_CURRENCY)
 
-            # Perform conversion
             converted_stake = self.exchange_service.convert_currency(
                 request.payload.stake,
                 exchange_rates.data,
                 target_currency=request.payload.currency,
             )
 
-            # Prepare successful response payload
             response_payload = ConversionResponsePayload(
                 marketId=request.payload.marketId,
                 selectionId=request.payload.selectionId,
@@ -43,7 +41,4 @@ class ConversionHandler:
             )
 
         except Exception as e:
-            # Handle unexpected errors with a generic error response
-            error_response = ConversionErrorMessage(id=request.id, message=f"Unable to convert stake. Error: {e!s}")
-            self.logger.exception("Conversion failed: %s", error_response.json())
-            return error_response
+            return ConversionErrorMessage(id=request.id, message=f"Unable to convert stake. Error: {e!s}")

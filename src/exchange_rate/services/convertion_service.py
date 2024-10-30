@@ -12,5 +12,5 @@ class ConversionService:
             converted_stake = stake / exchange_rates[target_currency]
             return converted_stake.quantize(Decimal("0.00001"), rounding=ROUND_DOWN)
         except KeyError:
-            self.logger.exception("Conversion failed: Currency '%s' not found in exchange rates.", target_currency)
+            self.logger.warning("Conversion failed: Currency '%s' not found in exchange rates.", target_currency)
             raise ValueError(f"Currency '{target_currency}' not available in exchange rates.") from None
