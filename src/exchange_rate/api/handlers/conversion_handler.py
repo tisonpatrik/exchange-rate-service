@@ -1,6 +1,7 @@
 from exchange_rate.config import BASE_CURRENCY
 from exchange_rate.freecurrency.freecurrency_client import FreeCurrencyAPIClient
 from exchange_rate.logging.logger import AppLogger
+from exchange_rate.models.errors import ConversionServiceError
 from exchange_rate.models.models import (
     ConversionErrorMessage,
     ConversionRequestMessage,
@@ -19,7 +20,6 @@ class ConversionHandler:
     async def convert_to_base_currency_async(self, request: ConversionRequestMessage):
         try:
             exchange_rates = await self.freecurrency_client.get_latest_exchange_rates(base_currency=BASE_CURRENCY)
-
             converted_stake = self.exchange_service.convert_currency(
                 request.payload.stake,
                 exchange_rates.data,
@@ -40,5 +40,11 @@ class ConversionHandler:
                 payload=response_payload,
             )
 
-        except Exception as e:
-            return ConversionErrorMessage(id=request.id, message=f"Unable to convert stake. Error: {e!s}")
+        except ConversionServiceError as e:
+            # Only ConversionService errors are sent as a ConversionErrorMessage
+            return ConversionErrorMessage(id=request.id, message=f"Unable to convert stake. Error: {e}")
+
+        except Exception:
+            # Other exceptions propagate as normal
+            self.logger.exception("An unexpected error occurred in conversion.")
+            raise

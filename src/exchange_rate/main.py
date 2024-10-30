@@ -14,7 +14,7 @@ async def main():
         conversion_handler = ConversionHandler(freecurrency_client=freecurrency_client)
         websocket_client = WebSocketClient(conversion_handler=conversion_handler)
 
-        await websocket_client.connect()
+        await websocket_client.start()
 
 
 if __name__ == "__main__":
