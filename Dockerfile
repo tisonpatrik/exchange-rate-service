@@ -40,4 +40,4 @@ RUN chown -R myuser:myuser /app
 
 USER myuser
 
-CMD ["uvicorn", "exchange_rate.main:app", "--host", "0.0.0.0", "--port", "49000","--loop", "uvloop", "--reload"]
+CMD ["python", "-m", "exchange_rate.main"]

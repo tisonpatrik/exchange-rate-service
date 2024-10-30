@@ -1,8 +1,6 @@
 from contextlib import asynccontextmanager
 from functools import lru_cache
 
-from fastapi import FastAPI
-
 import redis.asyncio as redis
 from exchange_rate.config import config
 from exchange_rate.logging.logger import AppLogger
@@ -13,7 +11,8 @@ logger = AppLogger.get_instance().get_logger()
 
 @lru_cache
 @asynccontextmanager
-async def setup_async_redis(app: FastAPI):
+async def setup_async_redis():
+    pool = None
     try:
         pool = redis.ConnectionPool.from_url(
             url=config.REDIS_URL,
@@ -22,9 +21,8 @@ async def setup_async_redis(app: FastAPI):
             socket_connect_timeout=config.REDIS_SOCKET_CONNECT_TIMEOUT,
             retry_on_timeout=True,
         )
-        app.state.redis_pool = pool
         logger.info("Redis connection pool initialized successfully.")
-        yield
+        yield pool
     except ConnectionError:
         logger.exception("Failed to initialize Redis connection pool due to connection error")
         raise
@@ -32,6 +30,6 @@ async def setup_async_redis(app: FastAPI):
         logger.exception("Redis connection pool initialization timed out")
         raise
     finally:
-        if app.state.redis_pool:
-            await app.state.redis_pool.aclose()
+        if pool:
+            await pool.aclose()
             logger.info("Redis connection pool closed successfully.")

@@ -3,6 +3,7 @@ from datetime import datetime
 
 from freecurrencyapi import Client
 
+from exchange_rate.config import config
 from exchange_rate.logging.logger import AppLogger
 from exchange_rate.models.exchange_rates import GetExchangeRatesCache, SetExchangeRatesCache
 from exchange_rate.models.models import LatestExchangeRatesResponse
@@ -10,8 +11,8 @@ from exchange_rate.redis.redis_client import RedisClient
 
 
 class FreeCurrencyAPIClient:
-    def __init__(self, client: Client, redis_client: RedisClient):
-        self.client = client
+    def __init__(self, redis_client: RedisClient):
+        self.client = Client(config.FREECURRENCYAPI_KEY)
         self.redis_client = redis_client
         self.logger = AppLogger.get_instance().get_logger()
         self.background_tasks = set()

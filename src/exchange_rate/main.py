@@ -1,16 +1,21 @@
-from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse
+import asyncio
 
-from exchange_rate.api.dependencies.core_dependencies import app_lifespan
-from exchange_rate.api.middleware.middleware import AppMiddleware
-from exchange_rate.config import APP_NAME, config
+from exchange_rate.api.handlers.conversion_handler import ConversionHandler
+from exchange_rate.api.websocket.websocket_client import WebSocketClient
+from exchange_rate.freecurrency.freecurrency_client import FreeCurrencyAPIClient
+from exchange_rate.redis.redis_client import RedisClient
+from exchange_rate.redis.redis_setup import setup_async_redis
 
-app = FastAPI(
-    title=APP_NAME,
-    version="0.1.0",
-    default_response_class=ORJSONResponse,
-    lifespan=app_lifespan,
-    debug=config.ENVIRONMENT == "local",
-)
 
-app.add_middleware(AppMiddleware)
+async def main():
+    async with setup_async_redis() as redis_pool:
+        redis_client = RedisClient(redis_pool)
+        freecurrency_client = FreeCurrencyAPIClient(redis_client)
+        conversion_handler = ConversionHandler(freecurrency_client=freecurrency_client)
+        websocket_client = WebSocketClient(conversion_handler=conversion_handler)
+
+        await websocket_client.connect()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
