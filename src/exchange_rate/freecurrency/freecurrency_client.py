@@ -1,7 +1,8 @@
 import asyncio
+from asyncio import Task
 from datetime import datetime
 
-from freecurrencyapi import Client
+from freecurrencyapi import Client  # type: ignore
 
 from exchange_rate.config import config
 from exchange_rate.logging.logger import AppLogger
@@ -15,7 +16,7 @@ class FreeCurrencyAPIClient:
         self.client = Client(config.FREECURRENCYAPI_KEY)
         self.redis_client = redis_client
         self.logger = AppLogger.get_instance().get_logger()
-        self.background_tasks = set()
+        self.background_tasks: set[Task] = set()
 
     async def get_latest_exchange_rates(self, base_currency: str) -> LatestExchangeRatesResponse:
         try:

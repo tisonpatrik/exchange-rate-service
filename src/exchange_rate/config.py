@@ -26,4 +26,4 @@ class Settings(BaseSettings):
     FREECURRENCYAPI_KEY: str
 
 
-config = Settings()  # type: ignore
+config = Settings()
