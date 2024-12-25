@@ -40,8 +40,6 @@ This project utilizes a range of tools and libraries designed to streamline deve
 
 - **Docker and Docker Compose**: For local development, Docker Compose manages our services seamlessly. The Dockerfile is production-ready, so you can set up a CI/CD pipeline and deploy to your preferred server.
 
-- **FastAPI**: Chosen for its simplicity and efficiency, FastAPI powers the API layer of this service. It’s an easy-to-use, high-performance framework that I personally enjoy working with.
-3
 - **WebSockets Library**: Provides support for handling WebSocket connections, allowing real-time data flows.
 
 - **Pydantic**: This library validates inputs and outputs, ensuring data integrity throughout the service. For environment variables, we rely on `pydantic-settings` to validate the `.env` configuration file.
@@ -60,22 +58,3 @@ The architecture follows a classic microservices approach with **Redis** as a ca
 - **Asynchronous Setup**: Efforts have been made to keep all relevant functions asynchronous, enhancing performance where it makes sense. For example, the WebSocket client setup uses an `@asynccontextmanager`, which ensures the connection is initialized and closed gracefully:
 
 - **Caching**: Exchange rate data is cached for **2 hours**, set as a hardcoded TTL for each cache entry in Redis. The TTL and other constants are centralized in `src/exchange_rate/config.py` for easy access and configuration.
-
-
-## Testing
-
-Currently, there are no implemented tests due to time constraints. An initial attempt was made to set up unit tests, but challenges with configuring `PYTHONPATH` for module imports in `pytest` prevented completion.
-
-### Planned Testing Approach
-
-If work continues on this project, testing would focus on:
-
-1. **Unit Tests**: Primarily for `conversion_service.py`, to validate core functionalities.
-2. **Integration Tests**: Using [Testcontainers](https://testcontainers.com/) for temporary, isolated testing environments, including:
-   - **Redis**: Ensuring cache interactions are handled as expected.
-   - **Free Currency API**: Mocking responses to test API integrations.
-   - **WebSocket**: Creating a fake WebSocket server to simulate connections and message handling.
-
-### Performance Testing
-
-The current setup hasn't undergone stress testing to verify handling of tens of requests per second. For now, we rely on FastAPI's performance capabilities to handle this load.
